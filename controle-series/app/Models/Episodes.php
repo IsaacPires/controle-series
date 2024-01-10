@@ -10,7 +10,11 @@ class Episodes extends Model
     use HasFactory;
     //para não ter timestamps automaticos no banco
     public $timestamps = false;
-    protected $fillable = ['number'];
+    protected $fillable = ['number', 'watched'];
+    /* podemos ter um código ainda mais seguro e, como dizemos em inglês, type safe.
+    Para isso podemos informar que precisamos de um cast, ou seja, uma mudança de tipos,
+    onde o campo watched precisa ser representado como um booleano. */
+    protected $casts = ['watched' => 'boolean'];
 
     public function seasons()
     {

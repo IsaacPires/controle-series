@@ -21,5 +21,16 @@ class Seasons extends Model
     {
         return $this->hasMany(Episodes::class, 'season_id');
     }
+
+    public function numberIfWatchedEps():int
+    {
+        //a função retorna todos episodios da temporada instanciada
+        //realiza um filtro através de uma função anonima
+        //passando todos os episodios assistidos
+        //após isso ele realiza uma contagem e a retorna
+        return $this->episodes
+            ->filter(fn($episode) => $episode->watched)
+            ->count();
+    }
     
 }

@@ -1,7 +1,10 @@
 <?php
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\SeasonsController;
+use App\Http\Controllers\EpisodesController;
+use App\Models\Episodes;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,6 +53,10 @@ DELETE	  /series/{photo}	     destroy	series.destroy */
  Route::resource('/series', SeriesController::class)->except('show');
 
  Route::get('/series/{series}/seasons', [SeasonsController::class, 'index'])->name('Seasons.index');
+
+ Route::get('/seasons/{seasons}/episodes', [EpisodesController::class, 'index'])->name('Episodes.index');
+ Route::PUT('/seasons/{seasons}/update',  [EpisodesController::class, 'update'])->name('Episodes.update');
+
 
 //pode ser feito da maneira manual, para usar o delete é necessário passar um metodo dentro do form
 //sinalizando que que será do tipo delete, se não terá de ser uma requisição post

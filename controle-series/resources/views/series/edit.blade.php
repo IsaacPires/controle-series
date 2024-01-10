@@ -1,7 +1,7 @@
 <x-layout title='Editar'>
-  <form action="{{route('series.update', $series->id)}}" method='PUT'>
+  <form action="{{route('series.update', $series->id)}}" method='POST'>
   @csrf
-
+  @method('PUT')
     <div class="row mb-3">
       <div class='mb-3 col-md-12'>
         <label class='form-label' for='name'>Nome:</label>
