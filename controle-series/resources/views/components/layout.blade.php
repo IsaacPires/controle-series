@@ -7,6 +7,14 @@
   <title>{{$title}}</title>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a href="{{ route('logout') }}" class="ms-auto">Logout</a>
+    </div>
+</nav>
+
+
+
 <div class='container'>
   <h1 class="text-primary" >{{$title}}</h1>
 

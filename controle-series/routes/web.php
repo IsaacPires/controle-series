@@ -6,6 +6,10 @@ use App\Http\Controllers\SeasonsController;
 use App\Http\Controllers\EpisodesController;
 use App\Models\Episodes;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\Authenticator;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UsersController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect('series');
-}); 
+})->middleware(Authenticator::class); 
 
 
 //podemos agrupar todos os conteudos que serão de uma mesma controle para não precisa repetilos diversas vezes
@@ -56,6 +60,20 @@ DELETE	  /series/{photo}	     destroy	series.destroy */
 
  Route::get('/seasons/{seasons}/episodes', [EpisodesController::class, 'index'])->name('Episodes.index');
  Route::PUT('/seasons/{seasons}/update',  [EpisodesController::class, 'update'])->name('Episodes.update');
+
+ Route::controller(LoginController::class)->group(function(){
+    Route::get('/login',  'index')->name('login');
+    Route::POST('/login','store')->name('signin');
+
+ });
+
+
+ Route::get('/register/create', [UsersController::class, 'create'])->name('register.create');
+ Route::POST('/register/store',[UsersController::class,'store'])->name('register.store');
+ Route::get('/register/destroy',[UsersController::class,'destroy'])->name('logout');
+
+
+
 
 
 //pode ser feito da maneira manual, para usar o delete é necessário passar um metodo dentro do form
