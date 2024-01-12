@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\SeriesFormRequest;
 use App\Repositories\SeriesRepository;
 use App\Repositories\EloquentSeriesRepository;
+use App\Http\Middleware\Authenticator;
 
 
 
@@ -22,7 +23,7 @@ class SeriesController extends Controller
   {
     $this->seriesRepository = $seriesRepository;
 
-    $this->middleware(App\Http\Middleware\Authenticator::class)->except('index');
+    $this->middleware(Authenticator::class)->except('index');
   } 
 
     public function index(Request $request){
