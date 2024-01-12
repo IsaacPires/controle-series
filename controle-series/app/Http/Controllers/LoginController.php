@@ -7,8 +7,9 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function index(){
-        return view('login.index');
+    public function index(Request $request){
+        $path = $request->segment(1);
+        return view('login.index')->with($path);
     }
 
     public function store(Request $request){

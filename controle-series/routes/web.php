@@ -22,10 +22,6 @@ use App\Http\Controllers\UsersController;
 |
 */
 
-Route::get('/', function () {
-    return redirect('series');
-})->middleware(Authenticator::class); 
-
 
 //podemos agrupar todos os conteudos que serão de uma mesma controle para não precisa repetilos diversas vezes
 //caso não houvesse este agrupamento seria necessário passar desta maneira
@@ -54,24 +50,48 @@ DELETE	  /series/{photo}	     destroy	series.destroy */
 //podemos definir apenas os metodos que desejamos com o only ou criar excessoes com o except
 //passando dentro do form method('delete') nos permite utilizar aqui no only o metodo
 //->only(['index', 'create', 'store', 'destroy', 'edit', 'update']);
+//através do kermel que se encontra dentro do http é possível adicionar apelidos aos middlewares
+//lá é como se fosse o núcleo do laravel
+//é poissivel criar um grupo de rotas setando o middleware ex:
+
+Route::middleware(Authenticator::class)->group(function (){
+    
+    Route::controller(EpisodesController::class)->group(function(){
+        Route::get('/seasons/{seasons}/episodes', 'index')
+        ->name('Episodes.index');
+
+        Route::PUT('/seasons/{seasons}/update',  'update')
+        ->name('Episodes.update');
+    });
+});
+
+Route::get('/', function () {
+    return redirect('series');
+})->middleware(Authenticator::class); 
+
  Route::resource('/series', SeriesController::class)->except('show');
 
- Route::get('/series/{series}/seasons', [SeasonsController::class, 'index'])->name('Seasons.index');
+ Route::get('/series/{series}/seasons', [SeasonsController::class, 'index'])
+ ->name('Seasons.index')->middleware(Authenticator::class);
 
- Route::get('/seasons/{seasons}/episodes', [EpisodesController::class, 'index'])->name('Episodes.index');
- Route::PUT('/seasons/{seasons}/update',  [EpisodesController::class, 'update'])->name('Episodes.update');
+ Route::controller(EpisodesController::class)->group(function(){
+    Route::get('/seasons/{seasons}/episodes', 'index')
+    ->name('Episodes.index')->middleware(Authenticator::class);
+
+    Route::PUT('/seasons/{seasons}/update',  'update')
+    ->name('Episodes.update')->middleware(Authenticator::class);
+});
 
  Route::controller(LoginController::class)->group(function(){
     Route::get('/login',  'index')->name('login');
     Route::POST('/login','store')->name('signin');
-
  });
 
-
- Route::get('/register/create', [UsersController::class, 'create'])->name('register.create');
- Route::POST('/register/store',[UsersController::class,'store'])->name('register.store');
- Route::get('/register/destroy',[UsersController::class,'destroy'])->name('logout');
-
+ Route::controller(UsersController::class)->group(function(){
+    Route::get('/register/create', 'create')->name('register.create');
+    Route::POST('/register/store', 'store')->name('register.store');
+    Route::POST('/register/destroy','destroy')->name('logout');
+});
 
 
 

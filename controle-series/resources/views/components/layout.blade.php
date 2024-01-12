@@ -7,11 +7,26 @@
   <title>{{$title}}</title>
 </head>
 <body>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a href="{{ route('logout') }}" class="ms-auto">Logout</a>
+        @auth
+            <div class="ms-auto">
+                <form action="{{ route('logout') }}" method='post'>
+                    @csrf
+                    <button class='btn btn-link'>Logout</button>
+                </form>
+            </div>
+        @endauth
+
+        @if(isset($path) && $path != 'login')
+            @guest
+                <a href="{{ route('login') }}" class="ms-auto">Login</a>
+            @endguest
+        @endif
     </div>
 </nav>
+
 
 
 
