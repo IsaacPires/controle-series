@@ -11,6 +11,10 @@ use App\Http\Requests\SeriesFormRequest;
 use App\Repositories\SeriesRepository;
 use App\Repositories\EloquentSeriesRepository;
 use App\Http\Middleware\Authenticator;
+use App\Mail\SeriesCreated;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 
 
@@ -54,6 +58,15 @@ class SeriesController extends Controller
     public function store( SeriesFormRequest $request){
 
       $series = $this->seriesRepository->add($request);
+      $users = User::all();
+      foreach ($users as $User) {
+        $mail = new SeriesCreated($request->name, $request->seasons, $series->id);
+        //É possível enviar emails pelo laravel, configurações de smtp pelo .env
+        //ao invés de usar send, utilizei queue para adicionar a uma fila. Mudar no env a 
+        //variavel de ambiente para setar como assincrono o processo
+        Mail::to($User)->queue($mail);     
+      }
+    
 
       $request->session()->flash('sessionMsg', "Série '{$series->name}' adicionada com sucesso!");
 

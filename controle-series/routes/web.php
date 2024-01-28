@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Authenticator;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsersController;
+use App\Mail\SeriesCreated;
 
 
 /*
@@ -91,6 +92,10 @@ Route::get('/', function () {
     Route::get('/register/create', 'create')->name('register.create');
     Route::POST('/register/store', 'store')->name('register.store');
     Route::POST('/register/destroy','destroy')->name('logout');
+});
+
+Route::get('/mail', function(){
+    return new SeriesCreated('breaking bad', '5', 39);
 });
 
 
