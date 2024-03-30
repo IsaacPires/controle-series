@@ -59,12 +59,13 @@ class SeriesController extends Controller
 
       $series = $this->seriesRepository->add($request);
       $users = User::all();
-      foreach ($users as $User) {
+      foreach ($users as $key => $User) {
         $mail = new SeriesCreated($request->name, $request->seasons, $series->id);
         //É possível enviar emails pelo laravel, configurações de smtp pelo .env
         //ao invés de usar send, utilizei queue para adicionar a uma fila. Mudar no env a 
         //variavel de ambiente para setar como assincrono o processo
-        Mail::to($User)->queue($mail);     
+        $when = now()->addSeconds($key * 2);
+        Mail::to($User)->later($when, $mail);     
       }
     
 
