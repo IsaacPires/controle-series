@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
-
+use App\Events\SeriesCreated as EventsSeriesCreated;
 use Illuminate\Support\Facades\DB;
 use App\Models\Series;
 use Illuminate\Http\Request;
@@ -24,11 +23,11 @@ class SeriesController extends Controller
   private $seriesRepository;
 
    public function __construct(SeriesRepository $seriesRepository)
-  {
+   {
     $this->seriesRepository = $seriesRepository;
 
     $this->middleware(Authenticator::class)->except('index');
-  } 
+   } 
 
     public function index(Request $request){
         //$request->get('ID') é a mesma coisa que $_GET['ID'];
@@ -49,7 +48,7 @@ class SeriesController extends Controller
         //$request->session()->forget('Success');
 
         return view('series.index')->with(['series' => $series])->with(['sessionMsg' => $sessionMsg]);
-      }
+    }
 
     public function create(Request $request){
        return view('series.criar');
@@ -58,16 +57,10 @@ class SeriesController extends Controller
     public function store( SeriesFormRequest $request){
 
       $series = $this->seriesRepository->add($request);
-      $users = User::all();
-      foreach ($users as $key => $User) {
-        $mail = new SeriesCreated($request->name, $request->seasons, $series->id);
-        //É possível enviar emails pelo laravel, configurações de smtp pelo .env
-        //ao invés de usar send, utilizei queue para adicionar a uma fila. Mudar no env a 
-        //variavel de ambiente para setar como assincrono o processo
-        $when = now()->addSeconds($key * 2);
-        Mail::to($User)->later($when, $mail);     
-      }
-    
+
+      $seriesCreated = new EventsSeriesCreated($request->name, $request->seasons, $series->id);
+      
+      event($seriesCreated);
 
       $request->session()->flash('sessionMsg', "Série '{$series->name}' adicionada com sucesso!");
 
