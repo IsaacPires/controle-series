@@ -12,7 +12,7 @@ class Series extends Model
     //podemos fazer inserções em massa no banco de dados
     //no entanto precisamos passar para o atributo fillable
     //quais são eles
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'cover'];
 
 
     public function seasons(){

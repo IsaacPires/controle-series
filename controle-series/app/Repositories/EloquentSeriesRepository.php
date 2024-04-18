@@ -11,6 +11,7 @@ use App\Models\seasons;
 
 
 class EloquentSeriesRepository implements SeriesRepository{
+  
   public function add(Request $request): Series{
           //DB::insert('INSERT INTO series (name) VALUES (?)', [$serieName])
       //$serie = new Series();
@@ -33,7 +34,12 @@ class EloquentSeriesRepository implements SeriesRepository{
       //DB::transaction para garantir que todo o código executado esteja dentro de uma única transação do banco de dados.
       return DB::transaction(function () use ($request){
 
-        $series = Series::create($request->all());
+        $series = Series::create(
+          [
+            'name' => $request->name,
+            'coverPath' => $request->coverPath
+          ]
+        );
 
         $seasons = [];
   

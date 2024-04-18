@@ -54,7 +54,10 @@ class SeriesController extends Controller
        return view('series.criar');
     }
 
-    public function store( SeriesFormRequest $request){
+    public function store( SeriesFormRequest $request)
+    {
+      $coverPath = $request->file('cover')->store('series_cover', ['public']);
+      $request->coverPath = $coverPath;
 
       $series = $this->seriesRepository->add($request);
 
